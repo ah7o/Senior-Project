@@ -1,19 +1,5 @@
 # /home/ali/healthproj/src/infer_pi_xgb.py
 #
-# Live hybrid inference on Raspberry Pi:
-#   - Reads sensors at ~10 Hz:
-#       * MAX30102 -> HR, SpO2 (non-medical)
-#       * MPU6050 -> IMU (acc_rms, acc_max, acc_var, jerk_max)
-#       * MLX90614 -> skin temperature
-#       * BME280 -> ambient temperature + humidity
-#       * ADS1115 A0 -> mic (MAX9814, volts -> dB)
-#       * ADS1115 A2 -> GSR (µS)
-#   - Forms 5 s overlapping windows (2.5 s step) for trends.
-#   - XGBoost fall model (binary: normal vs fall_like) for IMPACT.
-#   - Rule-based INACTIVITY after impact => possible_fall.
-#   - Rule-based HEAT strain (no ML): possible_heat_strain.
-#   - Rule-based COUGH (from mic): possible_cough_event.
-#   - Sends telemetry to ThingsBoard.
 
 import json
 import math
