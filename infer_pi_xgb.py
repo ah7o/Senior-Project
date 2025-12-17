@@ -98,18 +98,24 @@ def ads1115_read(channel_name: str) -> float:
         return code * 0.000125  # volts
 
 
-def gsr_from_voltage(v: float, vref: float = 3.3, calib: int = 700):
-    """Convert GSR voltage to approximate conductance in µS."""
-    if v <= 0:
+# ---- GSR conversion (voltage divider model) ----
+def gsr_from_voltage(v: float, vref: float = 3.3, r_fixed: float = 100_000.0):
+    """
+    Convert Grove GSR output voltage to:
+      - R_skin in ohms
+      - conductance in µS
+
+    Assumes a simple divider: Vout = Vref * R_skin / (R_fixed + R_skin)
+    => R_skin = R_fixed * Vout / (Vref - Vout)
+    """
+    # sanity checks
+    if v <= 0.0 or v >= vref:
         return float("inf"), 0.0
-    adc_10 = int(round(v / vref * 1023.0))
-    adc_10 = max(0, min(1023, adc_10))
-    denom = calib - adc_10
-    if denom <= 0:
-        return 1.0, 1e6
-    R_ohm = ((1024 + 2.0 * adc_10) * 10000.0) / denom
-    if R_ohm <= 0:
+
+    R_ohm = r_fixed * (v / (vref - v))
+    if R_ohm <= 0.0:
         return float("inf"), 0.0
+
     G_uS = 1e6 / R_ohm
     return R_ohm, G_uS
 
