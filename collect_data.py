@@ -240,16 +240,23 @@ def ads1115_read(channel_name: str) -> float:
 
 
 def gsr_from_voltage(v: float, vref: float = 3.3, calib: int = 700):
-    if v <= 0:
+    """
+    Grove GSR modeled as simple divider:
+
+        Vout = Vcc * R_skin / (R_fixed + R_skin)
+        => R_skin = R_fixed * Vout / (Vcc - Vout)
+
+    Returns (R_ohm, G_uS).
+    """
+    R_FIXED = 100_000.0  # ≈100 kΩ series resistor on Grove GSR
+
+    if v <= 0.0 or v >= vref:
         return float("inf"), 0.0
-    adc_10 = int(round(v / vref * 1023.0))
-    adc_10 = max(0, min(1023, adc_10))
-    denom = calib - adc_10
-    if denom <= 0:
-        return 1.0, 1e6
-    R_ohm = ((1024 + 2.0 * adc_10) * 10000.0) / denom
-    if R_ohm <= 0:
+
+    R_ohm = R_FIXED * (v / (vref - v))
+    if R_ohm <= 0.0:
         return float("inf"), 0.0
+
     G_uS = 1e6 / R_ohm
     return R_ohm, G_uS
 
