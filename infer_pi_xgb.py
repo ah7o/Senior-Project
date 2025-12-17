@@ -99,7 +99,7 @@ def ads1115_read(channel_name: str) -> float:
 
 
 # ---- GSR conversion (voltage divider model) ----
-def gsr_from_voltage(v: float, vref: float = 3.3, r_fixed: float = 100_000.0):
+def gsr_from_voltage(v: float, vref: float = 3.3, r_fixed: float = 10_000.0):
     """
     Convert Grove GSR output voltage to:
       - R_skin in ohms
