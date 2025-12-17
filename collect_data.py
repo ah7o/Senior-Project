@@ -248,7 +248,7 @@ def gsr_from_voltage(v: float, vref: float = 3.3, calib: int = 700):
 
     Returns (R_ohm, G_uS).
     """
-    R_FIXED = 100_000.0  # ≈100 kΩ series resistor on Grove GSR
+    R_FIXED = 10_000.0  # ≈10 kΩ series resistor on Grove GSR
 
     if v <= 0.0 or v >= vref:
         return float("inf"), 0.0
